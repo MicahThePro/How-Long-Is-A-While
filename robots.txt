@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://micahThePro.github.io/How-Long-Is-A-While/sitemap.xml
