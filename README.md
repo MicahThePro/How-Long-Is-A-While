@@ -29,14 +29,15 @@ For comparison, durations are normalized to seconds. The quiz treats one month a
 
 ## Deploy the frontend to GitHub Pages
 
-The GitHub Actions workflow in `.github/workflows/pages.yml` publishes only the `public` directory when changes are pushed to `main`.
+The `pages` branch contains the contents of `public` at its root, keeping the published frontend separate from the backend source on `main`. In the repository, open **Settings → Pages**, choose **Deploy from a branch**, select branch `pages` and folder `/(root)`, then save. GitHub Pages will publish that branch at `https://micahThePro.github.io/How-Long-Is-A-While/`.
 
-1. Push the repository to GitHub.
-2. In the repository, open **Settings → Pages**.
-3. Set **Build and deployment → Source** to **GitHub Actions**.
-4. Wait for the Pages workflow to finish, then open the Pages URL shown in the workflow or repository settings.
+To publish frontend changes after committing them on `main`, update the Pages branch from the `public` directory:
 
-The frontend uses the production Worker URL in `public/config.js`. If you deploy the backend at a different URL, update that setting and publish the frontend again.
+```powershell
+git subtree push --prefix=public origin pages
+```
+
+The frontend uses the production Worker URL in `public/config.js`. If you deploy the backend at a different URL, update that setting before publishing the Pages branch again.
 
 ## Deploy the backend to Cloudflare
 

@@ -4,9 +4,33 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#f5f2eb">
-    <meta name="description" content="A tiny quiz about the wonderfully vague ways we measure time.">
+    <meta name="description" content="How long is “a while”? Take a playful, crowd-sourced quiz about everyday time phrases and compare your estimates with everyone else's.">
+    <meta name="robots" content="index, follow, max-image-preview:large">
     <title>How Long Is “A While”?</title>
+    <link rel="canonical" href="https://micahThePro.github.io/How-Long-Is-A-While/">
+    <link rel="sitemap" type="application/xml" href="https://micahThePro.github.io/How-Long-Is-A-While/sitemap.xml">
     <link rel="stylesheet" href="./styles.css">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="How Long Is “A While”? — A Crowd-Sourced Time Quiz">
+    <meta property="og:description" content="Share your estimate for everyday time phrases and see how everyone else answers. More than 100 questions, from quick showers to long weekends.">
+    <meta property="og:url" content="https://micahThePro.github.io/How-Long-Is-A-While/">
+    <meta property="og:site_name" content="How Long Is “A While”?">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="How Long Is “A While”? — A Crowd-Sourced Time Quiz">
+    <meta name="twitter:description" content="Share your estimate for everyday time phrases and see how everyone else answers.">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "How Long Is “A While”?",
+        "url": "https://micahThePro.github.io/How-Long-Is-A-While/",
+        "description": "A free, crowd-sourced quiz about how people interpret vague everyday time phrases.",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "isAccessibleForFree": true,
+        "inLanguage": "en"
+      }
+    </script>
   </head>
   <body>
     <div class="page-shell">
@@ -22,22 +46,39 @@
       </header>
 
       <main id="app">
-        <section id="home-screen" class="screen home-screen">
-          <p class="eyebrow"><span class="eyebrow-line"></span> A VERY UNOFFICIAL STUDY</p>
-          <h1>How long is<br><em>“a while”?</em></h1>
-          <p class="intro">A quick quiz about the little time-warping phrases we all use. Give your answer, then see how everyone else thinks about it.</p>
-          <button id="start-button" class="primary-button" type="button">
-            Start the quiz <span aria-hidden="true">↗</span>
-          </button>
-          <div class="home-footnote">
-            <span class="footnote-star" aria-hidden="true">✳</span>
-            <span>100+ questions · Your own words · Everyone's answers</span>
-          </div>
-          <div class="orbit orbit-one" aria-hidden="true"></div>
-          <div class="orbit orbit-two" aria-hidden="true"></div>
-          <span class="decor decor-clock" aria-hidden="true">10:08</span>
-          <span class="decor decor-spark" aria-hidden="true">✳</span>
-        </section>
+        <div id="home-screen" class="screen">
+          <section class="home-screen">
+            <p class="eyebrow"><span class="eyebrow-line"></span> A VERY UNOFFICIAL STUDY</p>
+            <h1>How long is<br><em>“a while”?</em></h1>
+            <p class="intro">A quick quiz about the little time-warping phrases we all use. Give your answer, then see how everyone else thinks about it.</p>
+            <button id="start-button" class="primary-button" type="button">
+              Start the quiz <span aria-hidden="true">↗</span>
+            </button>
+            <div class="home-footnote">
+              <span class="footnote-star" aria-hidden="true">✳</span>
+              <span>100+ questions · Your own words · Everyone's answers</span>
+            </div>
+            <div class="orbit orbit-one" aria-hidden="true"></div>
+            <div class="orbit orbit-two" aria-hidden="true"></div>
+            <span class="decor decor-clock" aria-hidden="true">10:08</span>
+            <span class="decor decor-spark" aria-hidden="true">✳</span>
+          </section>
+
+          <section class="home-guide" aria-labelledby="home-guide-title">
+            <p class="eyebrow"><span class="eyebrow-line"></span> ABOUT THE QUIZ</p>
+            <h2 id="home-guide-title">The same words, different clocks.</h2>
+            <p>“A while,” “soon,” and “just a minute” sound specific until you try to put them on a clock. This free, crowd-sourced time quiz explores how people interpret those everyday phrases. Pick a question, give your estimate in seconds, minutes, hours, days, weeks, months, or years, and compare it with the community.</p>
+            <h3>Everyday questions, answered your way</h3>
+            <p>There are more than 100 prompts about ordinary moments: how long a quick shower takes, what counts as a short walk, when a late friend is really late, or how long a long weekend feels. Browse by topic, search for a phrase, or sort to find questions that need an answer.</p>
+            <h3>How the crowd’s answers are grouped</h3>
+            <p>Different units can describe the same duration, so answers are converted to a common scale before results are grouped. For this quiz, a month is treated as 30 days and a year as 365 days. Results show the number and share of responses for each estimate.</p>
+            <p>Answers are stored as anonymous totals, not tied to an account. A small reminder in your browser keeps track of questions you have answered on that device.</p>
+          </section>
+          <footer class="footer home-guide-footer">
+            <span>MADE FOR THE IN-BETWEEN MOMENTS</span>
+            <span>NO WRONG ANSWERS, ONLY DIFFERENT CLOCKS <span aria-hidden="true">✳</span></span>
+          </footer>
+        </div>
 
         <section id="question-screen" class="screen content-screen" hidden>
           <button class="text-button back-button" type="button" data-screen="home">← Home</button>
@@ -113,10 +154,6 @@
         <div id="notice" class="notice" role="status" hidden></div>
       </main>
 
-      <footer class="footer">
-        <span>MADE FOR THE IN-BETWEEN MOMENTS</span>
-        <span>NO WRONG ANSWERS, ONLY DIFFERENT CLOCKS <span aria-hidden="true">✳</span></span>
-      </footer>
     </div>
     <script src="./config.js"></script>
     <script type="module" src="./app.js"></script>
