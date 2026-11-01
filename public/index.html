@@ -62,6 +62,7 @@
             <div class="orbit orbit-two" aria-hidden="true"></div>
             <span class="decor decor-clock" aria-hidden="true">10:08</span>
             <span class="decor decor-spark" aria-hidden="true">✳</span>
+            <span class="hero-sticker" aria-hidden="true">GOOD<br>TIME!</span>
           </section>
 
           <section class="home-guide" aria-labelledby="home-guide-title">
@@ -74,10 +75,6 @@
             <p>Different units can describe the same duration, so answers are converted to a common scale before results are grouped. For this quiz, a month is treated as 30 days and a year as 365 days. Results show the number and share of responses for each estimate.</p>
             <p>Answers are stored as anonymous totals, not tied to an account. A small reminder in your browser keeps track of questions you have answered on that device.</p>
           </section>
-          <footer class="footer home-guide-footer">
-            <span>MADE FOR THE IN-BETWEEN MOMENTS</span>
-            <span>NO WRONG ANSWERS, ONLY DIFFERENT CLOCKS <span aria-hidden="true">✳</span></span>
-          </footer>
         </div>
 
         <section id="question-screen" class="screen content-screen" hidden>
@@ -85,7 +82,10 @@
           <div class="section-heading">
             <p class="eyebrow"><span class="eyebrow-line"></span> PICK YOUR QUESTION</p>
             <h2>Curious about<br><em>something?</em></h2>
-            <p class="section-description">Browse by topic, search for a moment, or sort by what people are answering.</p>
+            <div class="question-intro">
+              <p class="section-description">Browse by topic, search for a moment, or sort by what people are answering.</p>
+              <button id="random-question-button" class="random-question-button" type="button">Surprise me <span aria-hidden="true">✳</span></button>
+            </div>
           </div>
           <label class="search-box">
             <span aria-hidden="true">⌕</span>
@@ -143,9 +143,11 @@
               <div>
                 <p class="eyebrow"><span class="eyebrow-line"></span> THE CROWD SAYS</p>
                 <h3>Here’s the picture.</h3>
+                <p class="distribution-note">Each bar shows its share of the answers.</p>
               </div>
               <span id="response-total" class="response-total"></span>
             </div>
+            <p id="answer-reaction" class="answer-reaction" aria-live="polite" hidden></p>
             <div id="results-list" class="results-list"></div>
             <p class="results-footnote">Equivalent durations in different units are grouped together. Months count as 30 days and years as 365 days.</p>
           </section>
@@ -154,6 +156,10 @@
         <div id="notice" class="notice" role="status" hidden></div>
       </main>
 
+      <footer class="footer">
+        <span>MADE FOR THE IN-BETWEEN MOMENTS</span>
+        <span>NO WRONG ANSWERS, ONLY DIFFERENT CLOCKS <span aria-hidden="true">✳</span></span>
+      </footer>
     </div>
     <script src="./config.js"></script>
     <script type="module" src="./app.js"></script>

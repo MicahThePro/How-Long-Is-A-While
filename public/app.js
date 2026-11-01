@@ -16,6 +16,7 @@ const answerInput = document.querySelector("#answer-input");
 const answerUnit = document.querySelector("#answer-unit");
 const submitButton = document.querySelector("#submit-answer");
 const resultsSection = document.querySelector("#results-section");
+const answerReaction = document.querySelector("#answer-reaction");
 
 let questions = [];
 let questionCategories = [];
@@ -188,7 +189,11 @@ function renderResults(question) {
 
       const track = document.createElement("div");
       track.className = "result-track";
-      track.setAttribute("aria-hidden", "true");
+      track.setAttribute("role", "img");
+      track.setAttribute(
+        "aria-label",
+        `${option.percent}% of answers, ${option.count} ${option.count === 1 ? "response" : "responses"}`,
+      );
       const fill = document.createElement("div");
       fill.className = "result-fill";
       fill.style.width = `${option.percent}%`;
@@ -199,6 +204,30 @@ function renderResults(question) {
   }
 
   resultsSection.hidden = false;
+}
+
+function showAnswerCelebration() {
+  answerReaction.textContent = "Your estimate just joined the timeline!";
+  answerReaction.hidden = false;
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  const colors = ["#ff5277", "#ffe36e", "#69d8df", "#9d8bff"];
+  const celebration = document.createElement("div");
+  celebration.className = "confetti";
+  celebration.setAttribute("aria-hidden", "true");
+
+  for (let index = 0; index < 22; index += 1) {
+    const piece = document.createElement("span");
+    piece.style.setProperty("--confetti-color", colors[index % colors.length]);
+    piece.style.setProperty("--confetti-x", `${Math.random() * 100}%`);
+    piece.style.setProperty("--confetti-delay", `${Math.random() * 350}ms`);
+    piece.style.setProperty("--confetti-spin", `${Math.random() * 540 - 270}deg`);
+    celebration.append(piece);
+  }
+
+  document.body.append(celebration);
+  setTimeout(() => celebration.remove(), 1800);
 }
 
 function openQuestion(questionId) {
@@ -213,6 +242,7 @@ function openQuestion(questionId) {
   answerUnit.value = "seconds";
 
   const alreadyAnswered = answeredQuestions().has(questionId);
+  answerReaction.hidden = true;
   answerForm.hidden = alreadyAnswered;
   document.querySelector("#already-answered").hidden = !alreadyAnswered;
   resultsSection.hidden = !alreadyAnswered;
@@ -274,6 +304,24 @@ document.querySelector("#start-button").addEventListener("click", () => {
   searchInput.focus({ preventScroll: true });
 });
 
+document.querySelector("#random-question-button").addEventListener("click", () => {
+  const query = searchInput.value.trim().toLowerCase();
+  const matching = questions.filter((question) =>
+    (activeCategory === "All" || question.category === activeCategory) &&
+    `${question.text} ${question.category}`.toLowerCase().includes(query),
+  );
+  const unanswered = matching.filter((question) => !answeredQuestions().has(question.id));
+  const choices = unanswered.length > 0 ? unanswered : matching;
+
+  if (choices.length === 0) {
+    showNotice("No questions match those filters. Clear your search or choose another topic.");
+    return;
+  }
+
+  const question = choices[Math.floor(Math.random() * choices.length)];
+  openQuestion(question.id);
+});
+
 document.querySelectorAll('[data-screen="home"]').forEach((button) => {
   button.addEventListener("click", () => setScreen("home"));
 });
@@ -323,6 +371,7 @@ answerForm.addEventListener("submit", async (event) => {
     answerForm.hidden = true;
     document.querySelector("#already-answered").hidden = false;
     renderResults(data.question);
+    showAnswerCelebration();
   } catch (error) {
     showNotice(error.message);
   } finally {
