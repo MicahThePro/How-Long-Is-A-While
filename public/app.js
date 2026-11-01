@@ -305,6 +305,14 @@ document.querySelector("#start-button").addEventListener("click", () => {
 });
 
 document.querySelector("#random-question-button").addEventListener("click", () => {
+  openRandomQuestion();
+});
+
+document.querySelector("#next-random-question-button").addEventListener("click", () => {
+  openRandomQuestion();
+});
+
+function openRandomQuestion() {
   const query = searchInput.value.trim().toLowerCase();
   const matching = questions.filter((question) =>
     (activeCategory === "All" || question.category === activeCategory) &&
@@ -320,7 +328,7 @@ document.querySelector("#random-question-button").addEventListener("click", () =
 
   const question = choices[Math.floor(Math.random() * choices.length)];
   openQuestion(question.id);
-});
+}
 
 document.querySelectorAll('[data-screen="home"]').forEach((button) => {
   button.addEventListener("click", () => setScreen("home"));
