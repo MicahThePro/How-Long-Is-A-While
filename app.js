@@ -30,6 +30,40 @@ let socket;
 let heartbeat;
 let noticeTimeout;
 
+function updateClocks() {
+  const now = new Date();
+  const digitalClock = document.querySelector("#local-clock");
+  digitalClock.dateTime = now.toISOString();
+  digitalClock.textContent = new Intl.DateTimeFormat(undefined, {
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(now);
+
+  const seconds = now.getSeconds() + now.getMilliseconds() / 1000;
+  const minutes = now.getMinutes() + seconds / 60;
+  const hours = (now.getHours() % 12) + minutes / 60;
+  document.querySelector("#analog-clock").setAttribute(
+    "aria-label",
+    `Local time ${new Intl.DateTimeFormat(undefined, {
+      hour: "numeric",
+      minute: "2-digit",
+      second: "2-digit",
+    }).format(now)}`,
+  );
+  document.querySelector("#clock-hour-hand").setAttribute(
+    "transform",
+    `rotate(${hours * 30} 32 32)`,
+  );
+  document.querySelector("#clock-minute-hand").setAttribute(
+    "transform",
+    `rotate(${minutes * 6} 32 32)`,
+  );
+  document.querySelector("#clock-second-hand").setAttribute(
+    "transform",
+    `rotate(${seconds * 6} 32 32)`,
+  );
+}
+
 function showNotice(message) {
   notice.textContent = message;
   notice.hidden = false;
@@ -578,6 +612,8 @@ answerForm.addEventListener("submit", async (event) => {
 });
 
 document.querySelector("#online-count").textContent = "Connecting…";
+updateClocks();
+setInterval(updateClocks, 1000);
 Promise.all([
   loadQuestions(),
   request("/api/status").then((data) => setOnlineCount(data.online)),
