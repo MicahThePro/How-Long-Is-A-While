@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f2eb">
+    <meta name="description" content="A tiny quiz about the wonderfully vague ways we measure time.">
+    <title>How Long Is “A While”?</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <a class="wordmark" href="./" aria-label="How Long Is A While home">
+          <span class="wordmark-icon" aria-hidden="true">≈</span>
+          <span>TIME IS RELATIVE</span>
+        </a>
+        <div class="online-pill" aria-live="polite">
+          <span class="live-dot" aria-hidden="true"></span>
+          <span id="online-count">Connecting…</span>
+        </div>
+      </header>
+
+      <main id="app">
+        <section id="home-screen" class="screen home-screen">
+          <p class="eyebrow"><span class="eyebrow-line"></span> A VERY UNOFFICIAL STUDY</p>
+          <h1>How long is<br><em>“a while”?</em></h1>
+          <p class="intro">A quick quiz about the little time-warping phrases we all use. Give your answer, then see how everyone else thinks about it.</p>
+          <button id="start-button" class="primary-button" type="button">
+            Start the quiz <span aria-hidden="true">↗</span>
+          </button>
+          <div class="home-footnote">
+            <span class="footnote-star" aria-hidden="true">✳</span>
+            <span>100+ questions · Your own words · Everyone's answers</span>
+          </div>
+          <div class="orbit orbit-one" aria-hidden="true"></div>
+          <div class="orbit orbit-two" aria-hidden="true"></div>
+          <span class="decor decor-clock" aria-hidden="true">10:08</span>
+          <span class="decor decor-spark" aria-hidden="true">✳</span>
+        </section>
+
+        <section id="question-screen" class="screen content-screen" hidden>
+          <button class="text-button back-button" type="button" data-screen="home">← Home</button>
+          <div class="section-heading">
+            <p class="eyebrow"><span class="eyebrow-line"></span> PICK YOUR QUESTION</p>
+            <h2>Curious about<br><em>something?</em></h2>
+            <p class="section-description">Browse by topic, search for a moment, or sort by what people are answering.</p>
+          </div>
+          <label class="search-box">
+            <span aria-hidden="true">⌕</span>
+            <input id="question-search" type="search" placeholder="Find a question…" autocomplete="off">
+            <kbd>/</kbd>
+          </label>
+          <div class="question-controls">
+            <div id="category-filters" class="category-filters" role="group" aria-label="Filter questions by topic"></div>
+            <label class="sort-control" for="question-sort">
+              <span>Sort</span>
+              <select id="question-sort">
+                <option value="popular">Most answered</option>
+                <option value="unanswered">Unanswered first</option>
+                <option value="alphabetical">A–Z</option>
+              </select>
+            </label>
+          </div>
+          <div class="question-list-heading">
+            <p id="question-list-label" class="list-label">ALL QUESTIONS</p>
+            <span id="question-result-count" class="question-result-count"></span>
+          </div>
+          <div id="question-list" class="question-list"></div>
+        </section>
+
+        <section id="answer-screen" class="screen content-screen" hidden>
+          <button id="back-to-questions" class="text-button back-button" type="button">← All questions</button>
+          <article class="answer-card">
+            <p class="eyebrow"><span class="eyebrow-line"></span> YOUR TAKE</p>
+            <p id="question-number" class="question-number"></p>
+            <h2 id="active-question" class="active-question"></h2>
+            <form id="answer-form">
+              <label class="answer-label" for="answer-input">How long?</label>
+              <div class="answer-entry">
+                <input id="answer-input" name="amount" type="number" min="0" step="any" inputmode="decimal" placeholder="Enter a number" autocomplete="off" required>
+                <select id="answer-unit" name="unit" aria-label="Time unit">
+                  <option value="seconds">seconds</option>
+                  <option value="minutes">minutes</option>
+                  <option value="hours">hours</option>
+                  <option value="days">days</option>
+                  <option value="weeks">weeks</option>
+                  <option value="months">months</option>
+                  <option value="years">years</option>
+                </select>
+                <button id="submit-answer" class="submit-button" type="submit" aria-label="Submit answer">↗</button>
+              </div>
+              <div class="input-meta">
+                <span>Enter a number, then choose seconds through years.</span>
+                <span>Answers are public.</span>
+              </div>
+            </form>
+            <p id="already-answered" class="answered-note" hidden>You’ve already answered this one on this device. Here’s how everyone answered.</p>
+          </article>
+          <section id="results-section" class="results-section" aria-live="polite" hidden>
+            <div class="results-heading">
+              <div>
+                <p class="eyebrow"><span class="eyebrow-line"></span> THE CROWD SAYS</p>
+                <h3>Here’s the picture.</h3>
+              </div>
+              <span id="response-total" class="response-total"></span>
+            </div>
+            <div id="results-list" class="results-list"></div>
+            <p class="results-footnote">Equivalent durations in different units are grouped together. Months count as 30 days and years as 365 days.</p>
+          </section>
+        </section>
+
+        <div id="notice" class="notice" role="status" hidden></div>
+      </main>
+
+      <footer class="footer">
+        <span>MADE FOR THE IN-BETWEEN MOMENTS</span>
+        <span>NO WRONG ANSWERS, ONLY DIFFERENT CLOCKS <span aria-hidden="true">✳</span></span>
+      </footer>
+    </div>
+    <script src="./config.js"></script>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "how-long-is-a-while",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-30",
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "QUIZ_ROOM",
+        "class_name": "QuizRoom"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["QuizRoom"]
+    }
+  ]
+}
