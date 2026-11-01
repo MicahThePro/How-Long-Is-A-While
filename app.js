@@ -1,6 +1,7 @@
 const screens = {
   home: document.querySelector("#home-screen"),
   questions: document.querySelector("#question-screen"),
+  myAnswers: document.querySelector("#my-answers-screen"),
   answer: document.querySelector("#answer-screen"),
 };
 const API_BASE_URL = window.QUIZ_API_URL || window.location.origin;
@@ -11,6 +12,9 @@ const categoryFilters = document.querySelector("#category-filters");
 const sortSelect = document.querySelector("#question-sort");
 const questionListLabel = document.querySelector("#question-list-label");
 const questionResultCount = document.querySelector("#question-result-count");
+const homeProgressLabel = document.querySelector("#home-progress-label");
+const pickerProgressLabel = document.querySelector("#picker-progress-label");
+const myAnswersList = document.querySelector("#my-answers-list");
 const answerForm = document.querySelector("#answer-form");
 const answerInput = document.querySelector("#answer-input");
 const answerUnit = document.querySelector("#answer-unit");
@@ -60,6 +64,82 @@ function rememberAnswer(questionId) {
   const answered = answeredQuestions();
   answered.add(questionId);
   localStorage.setItem("while-quiz-answered", JSON.stringify([...answered]));
+  updateProgress();
+  if (!screens.myAnswers.hidden) renderMyAnswers();
+}
+
+function updateProgress() {
+  const savedAnswers = answeredQuestions();
+  const answeredCount = questions.filter((question) =>
+    savedAnswers.has(question.id) || savedAnswers.has(String(question.id)),
+  ).length;
+  const total = questions.length;
+
+  for (const [label, bar] of [
+    [homeProgressLabel, document.querySelector("#home-progress-bar")],
+    [pickerProgressLabel, document.querySelector("#picker-progress-bar")],
+  ]) {
+    label.textContent = `${answeredCount} of ${total} questions answered`;
+    bar.setAttribute("aria-valuemax", String(total));
+    bar.setAttribute("aria-valuenow", String(answeredCount));
+    bar.firstElementChild.style.width = total
+      ? `${(answeredCount / total) * 100}%`
+      : "0%";
+  }
+}
+
+function renderMyAnswers() {
+  const savedAnswers = answeredQuestions();
+  const saved = questions.filter((question) =>
+    savedAnswers.has(question.id) || savedAnswers.has(String(question.id)),
+  );
+  document.querySelector("#my-answers-progress").textContent =
+    `${saved.length} of ${questions.length} questions answered on this device.`;
+  myAnswersList.replaceChildren();
+
+  if (saved.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "empty-list";
+    empty.textContent = "Your answered questions will appear here. Pick one and share your take!";
+    myAnswersList.append(empty);
+    return;
+  }
+
+  for (const [index, question] of saved.entries()) {
+    const button = document.createElement("button");
+    button.className = "question-row";
+    button.type = "button";
+    button.addEventListener("click", () => openQuestion(question.id));
+
+    const rank = document.createElement("span");
+    rank.className = "question-rank";
+    rank.textContent = String(index + 1).padStart(2, "0");
+
+    const copy = document.createElement("span");
+    copy.className = "question-copy";
+    copy.textContent = question.text;
+
+    const details = document.createElement("span");
+    details.className = "question-details";
+    const category = document.createElement("span");
+    category.className = "question-category";
+    category.textContent = question.category;
+    const resultCount = document.createElement("span");
+    resultCount.className = "question-count";
+    resultCount.textContent = `${question.total} ${question.total === 1 ? "response" : "responses"}`;
+    details.append(category, resultCount);
+
+    const content = document.createElement("span");
+    content.className = "question-content";
+    content.append(copy, details);
+
+    const arrow = document.createElement("span");
+    arrow.className = "question-arrow";
+    arrow.setAttribute("aria-hidden", "true");
+    arrow.textContent = "↗";
+    button.append(rank, content, arrow);
+    myAnswersList.append(button);
+  }
 }
 
 function renderQuestionList() {
@@ -165,7 +245,15 @@ function renderResults(question) {
   document.querySelector("#response-total").textContent =
     `${question.total} ${question.total === 1 ? "response" : "responses"}`;
   const list = document.querySelector("#results-list");
+  const topAnswer = document.querySelector("#top-answer");
   list.replaceChildren();
+  topAnswer.hidden = question.options.length === 0;
+
+  if (question.options.length > 0) {
+    const mostCommon = question.options[0];
+    topAnswer.textContent =
+      `Most common estimate: ${mostCommon.answer} · ${mostCommon.percent}% of responses`;
+  }
 
   if (question.options.length === 0) {
     const empty = document.createElement("p");
@@ -173,34 +261,67 @@ function renderResults(question) {
     empty.textContent = "No answers yet — yours will be the first.";
     list.append(empty);
   } else {
-    for (const option of question.options) {
+    const options = [...question.options].sort(
+      (a, b) => a.durationSeconds - b.durationSeconds,
+    );
+    const maxSeconds = Math.max(
+      31536000,
+      ...options.map((option) => option.durationSeconds),
+    );
+    const logMaxSeconds = Math.log1p(maxSeconds);
+
+    for (const option of options) {
       const row = document.createElement("div");
-      row.className = "result-row";
+      row.className = "timeline-row";
 
       const topline = document.createElement("div");
-      topline.className = "result-topline";
+      topline.className = "timeline-topline";
       const answer = document.createElement("span");
       answer.className = "result-answer";
       answer.textContent = option.answer;
+      if (option === question.options[0]) {
+        const badge = document.createElement("span");
+        badge.className = "top-answer-badge";
+        badge.textContent = "MOST COMMON";
+        answer.append(" ", badge);
+      }
       const stats = document.createElement("span");
       stats.className = "result-stats";
       stats.textContent = `${option.percent}% · ${option.count} ${option.count === 1 ? "answer" : "answers"}`;
       topline.append(answer, stats);
 
       const track = document.createElement("div");
-      track.className = "result-track";
+      track.className = "timeline-track";
       track.setAttribute("role", "img");
       track.setAttribute(
         "aria-label",
-        `${option.percent}% of answers, ${option.count} ${option.count === 1 ? "response" : "responses"}`,
+        `${option.answer}, ${option.percent}% of answers, ${option.count} ${option.count === 1 ? "response" : "responses"}`,
       );
-      const fill = document.createElement("div");
-      fill.className = "result-fill";
-      fill.style.width = `${option.percent}%`;
-      track.append(fill);
+      const dot = document.createElement("span");
+      dot.className = "timeline-dot";
+      dot.style.left = `${(Math.log1p(option.durationSeconds) / logMaxSeconds) * 100}%`;
+      if (option === question.options[0]) dot.classList.add("is-most-common");
+      track.append(dot);
       row.append(topline, track);
       list.append(row);
     }
+
+    const axis = document.createElement("div");
+    axis.className = "timeline-axis";
+    for (const tick of [
+      { seconds: 0, label: "0" },
+      { seconds: 60, label: "1 min" },
+      { seconds: 3600, label: "1 hr" },
+      { seconds: 86400, label: "1 day" },
+      { seconds: 2592000, label: "1 mo" },
+      { seconds: 31536000, label: "1 yr" },
+    ]) {
+      const label = document.createElement("span");
+      label.textContent = tick.label;
+      label.style.left = `${(Math.log1p(tick.seconds) / logMaxSeconds) * 100}%`;
+      axis.append(label);
+    }
+    list.append(axis);
   }
 
   resultsSection.hidden = false;
@@ -255,8 +376,10 @@ async function loadQuestions() {
   const data = await request("/api/questions");
   questions = data.questions;
   questionCategories = data.categories;
+  updateProgress();
   renderCategoryFilters();
   renderQuestionList();
+  if (!screens.myAnswers.hidden) renderMyAnswers();
   if (activeQuestionId !== null && !screens.answer.hidden) {
     const current = questions.find((question) => question.id === activeQuestionId);
     if (current && answeredQuestions().has(activeQuestionId)) renderResults(current);
@@ -312,13 +435,28 @@ document.querySelector("#next-random-question-button").addEventListener("click",
   openRandomQuestion();
 });
 
+document.querySelector("#my-answers-button").addEventListener("click", () => {
+  renderMyAnswers();
+  setScreen("myAnswers");
+});
+
+document.querySelectorAll('[data-screen="questions"]').forEach((button) => {
+  button.addEventListener("click", () => {
+    setScreen("questions");
+    renderQuestionList();
+  });
+});
+
 function openRandomQuestion() {
   const query = searchInput.value.trim().toLowerCase();
   const matching = questions.filter((question) =>
     (activeCategory === "All" || question.category === activeCategory) &&
     `${question.text} ${question.category}`.toLowerCase().includes(query),
   );
-  const unanswered = matching.filter((question) => !answeredQuestions().has(question.id));
+  const savedAnswers = answeredQuestions();
+  const unanswered = matching.filter((question) =>
+    !savedAnswers.has(question.id) && !savedAnswers.has(String(question.id)),
+  );
   const choices = unanswered.length > 0 ? unanswered : matching;
 
   if (choices.length === 0) {
@@ -329,6 +467,58 @@ function openRandomQuestion() {
   const question = choices[Math.floor(Math.random() * choices.length)];
   openQuestion(question.id);
 }
+
+async function copyQuestionLink(url) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(url);
+    return;
+  }
+
+  const field = document.createElement("textarea");
+  field.value = url;
+  field.style.position = "fixed";
+  field.style.opacity = "0";
+  document.body.append(field);
+  field.select();
+  const copied = document.execCommand("copy");
+  field.remove();
+  if (!copied) throw new Error("Your browser couldn’t copy the question link.");
+}
+
+document.querySelector("#share-question-button").addEventListener("click", async () => {
+  const question = questions.find((item) => item.id === activeQuestionId);
+  if (!question) return;
+
+  const url = new URL(window.location.href);
+  url.searchParams.set("question", String(question.id));
+  const shareData = {
+    title: "How Long Is “A While”?",
+    text: question.text,
+    url: url.toString(),
+  };
+
+  if (navigator.share) {
+    try {
+      await navigator.share(shareData);
+    } catch (error) {
+      if (error.name === "AbortError") return;
+      try {
+        await copyQuestionLink(shareData.url);
+        showNotice("Question link copied!");
+      } catch (copyError) {
+        showNotice(copyError.message);
+      }
+    }
+    return;
+  }
+
+  try {
+    await copyQuestionLink(shareData.url);
+    showNotice("Question link copied!");
+  } catch (error) {
+    showNotice(error.message);
+  }
+});
 
 document.querySelectorAll('[data-screen="home"]').forEach((button) => {
   button.addEventListener("click", () => setScreen("home"));
@@ -391,5 +581,13 @@ document.querySelector("#online-count").textContent = "Connecting…";
 Promise.all([
   loadQuestions(),
   request("/api/status").then((data) => setOnlineCount(data.online)),
-]).catch((error) => showNotice(error.message));
+]).then(() => {
+  const url = new URL(window.location.href);
+  const questionId = Number(url.searchParams.get("question"));
+  if (Number.isInteger(questionId) && questions.some((question) => question.id === questionId)) {
+    openQuestion(questionId);
+    url.searchParams.delete("question");
+    window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+  }
+}).catch((error) => showNotice(error.message));
 connectPresence();
