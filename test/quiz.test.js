@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import worker, { DURATION_UNITS, normalizeAnswer, normalizeDuration } from "../src/index.js";
+import worker, { DURATION_UNITS, normalizeAnswer, normalizeDuration, QuizRoom } from "../src/index.js";
 import { QUESTIONS, QUESTION_CATEGORIES } from "../src/questions.js";
 
 test("the quiz contains more than 100 distinct questions", () => {
@@ -45,6 +45,27 @@ test("duration answers in different units normalize to the same amount", () => {
 test("duration normalization rejects unsupported units and overflowing amounts", () => {
   assert.throws(() => normalizeDuration(1, "fortnights"));
   assert.throws(() => normalizeDuration(Number.MAX_VALUE, "years"), /too large/);
+});
+
+test("quiz results include normalized duration values for the timeline", () => {
+  const rows = [
+    { id: 1, text: QUESTIONS[0].text, normalized_answer: null, display_answer: null, count: null },
+    { id: 1, text: QUESTIONS[0].text, normalized_answer: "60", display_answer: "1 minute", count: 2 },
+    { id: 1, text: QUESTIONS[0].text, normalized_answer: "3600", display_answer: "1 hour", count: 1 },
+  ];
+  const sql = {
+    exec(query) {
+      if (query.includes("SELECT COUNT(*)")) return { one: () => ({ count: QUESTIONS.length }) };
+      if (query.includes("SELECT q.id")) return { toArray: () => rows };
+      return { one: () => ({}) };
+    },
+  };
+  const room = new QuizRoom({ storage: { sql } });
+
+  assert.deepEqual(room.getQuestion(1).options, [
+    { answer: "1 minute", durationSeconds: 60, count: 2, percent: 66.7 },
+    { answer: "1 hour", durationSeconds: 3600, count: 1, percent: 33.3 },
+  ]);
 });
 
 test("the API answers cross-origin browser preflight requests", async () => {

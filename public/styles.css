@@ -179,6 +179,27 @@ h1 em, .section-heading h2 em { color: var(--orange); font-weight: 500; text-sha
 
 .footnote-star { color: var(--orange); font-size: 15px; }
 
+.progress-widget {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(120px, 220px) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border: 1px solid rgba(32, 35, 67, .1);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .78);
+}
+
+.home-progress { width: min(100% - 32px, 720px); margin: 0 auto 34px; }
+.picker-progress { margin: 0 0 24px; }
+.progress-copy { display: grid; gap: 4px; }
+.progress-kicker { color: var(--orange-dark); font-family: var(--mono); font-size: 9px; letter-spacing: .1em; }
+.progress-label { color: var(--ink); font-size: 12px; font-weight: 700; }
+.progress-track { height: 9px; overflow: hidden; border-radius: 99px; background: #dcecf2; }
+.progress-track span { display: block; width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #69d8df, var(--orange)); transition: width .35s ease; }
+.my-answers-button { padding: 8px 11px; border: 1px solid var(--line); border-radius: 999px; background: white; color: var(--ink); cursor: pointer; font-size: 11px; font-weight: 700; }
+.my-answers-button:hover { border-color: var(--orange); }
+
 .home-guide {
   width: min(100%, 900px);
   margin: 0 auto;
@@ -189,7 +210,8 @@ h1 em, .section-heading h2 em { color: var(--orange); font-weight: 500; text-sha
   line-height: 1.75;
 }
 
-.guide-intro { max-width: 720px; margin: 0 auto 34px; }
+.guide-intro { position: relative; max-width: 720px; margin: 0 auto 34px; padding-right: 76px; }
+.clock-doodle { position: absolute; top: 0; right: 2px; width: 58px; color: var(--orange-dark); transform: rotate(9deg); }
 
 .home-guide h2 {
   margin: 13px 0 14px;
@@ -328,16 +350,25 @@ h1 em, .section-heading h2 em { color: var(--orange); font-weight: 500; text-sha
 .results-heading h3 { margin: 9px 0 0; font-family: var(--serif); font-size: 30px; font-weight: 500; letter-spacing: -.03em; }
 .distribution-note { margin: 7px 0 0; color: var(--muted); font-size: 12px; }
 .response-total { color: #85877d; font-family: var(--mono); font-size: 10px; white-space: nowrap; }
-.results-list { display: grid; gap: 9px; }
-.result-row { padding: 14px 16px; border: 1px solid rgba(32, 35, 67, .1); border-radius: 13px; background: rgba(255, 255, 255, .82); }
-.result-topline { display: flex; align-items: baseline; justify-content: space-between; gap: 15px; }
+.top-answer { margin: 0 0 16px; padding: 12px 15px; border: 1px solid #e8d77f; border-radius: 12px; background: #fff8c9; color: var(--ink); font-size: 13px; font-weight: 700; }
+.top-answer[hidden] { display: none; }
+.top-answer-badge { display: inline-block; margin-left: 6px; padding: 3px 6px; border-radius: 999px; background: #fff1a7; color: #79641b; font-family: var(--mono); font-size: 8px; letter-spacing: .05em; vertical-align: middle; }
+.results-list { display: grid; gap: 12px; }
+.timeline-row { padding: 12px 15px 8px; border: 1px solid rgba(32, 35, 67, .1); border-radius: 13px; background: rgba(255, 255, 255, .82); }
+.timeline-topline { display: flex; align-items: baseline; justify-content: space-between; gap: 15px; }
 .result-answer { overflow-wrap: anywhere; color: var(--ink); font-size: 13px; }
 .result-stats { flex: 0 0 auto; color: #667366; font-family: var(--mono); font-size: 10px; white-space: nowrap; }
-.result-track { height: 8px; margin-top: 11px; overflow: hidden; border-radius: 9px; background: #e1edf4; }
-.result-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #72d9df, #8884ff); transition: width .5s ease; }
-.result-row:first-child .result-fill { background: var(--orange); }
+.timeline-track { position: relative; height: 14px; margin-top: 7px; border-bottom: 2px solid #d5e5ed; background-image: linear-gradient(to right, rgba(32, 35, 67, .08) 1px, transparent 1px); background-size: 20% 100%; }
+.timeline-dot { position: absolute; bottom: -6px; width: 12px; height: 12px; border: 2px solid white; border-radius: 50%; background: #6bbcc9; box-shadow: 0 0 0 1px #6bbcc9; transform: translateX(-50%); }
+.timeline-dot.is-most-common { width: 16px; height: 16px; bottom: -8px; background: var(--orange); box-shadow: 0 0 0 2px #ffd5df; }
+.timeline-axis { position: relative; height: 23px; margin: 0 15px; color: var(--muted); font-family: var(--mono); font-size: 9px; }
+.timeline-axis span { position: absolute; top: 5px; white-space: nowrap; transform: translateX(-50%); }
+.timeline-axis span:last-child { transform: translateX(-100%); }
+.results-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
 .results-footnote { margin: 15px 0 0; color: #8b8c81; font-size: 11px; line-height: 1.6; }
-.next-question-button { margin-top: 20px; }
+.next-question-button { margin: 0; }
+.secondary-action { background: white; }
+.secondary-action:hover { background: #fff7f9; }
 .no-results { padding: 18px; border: 1px dashed var(--line); color: var(--muted); font-size: 13px; }
 
 .answer-reaction { margin: 0 0 14px; padding: 12px 15px; border: 1px solid #e8d77f; border-radius: 12px; background: #fff8c9; color: var(--ink); font-size: 13px; font-weight: 700; animation: pop-in .35s ease both; }
@@ -367,8 +398,16 @@ h1 em, .section-heading h2 em { color: var(--orange); font-weight: 500; text-sha
   .content-screen { padding-top: 25px; }
   .question-intro { align-items: flex-start; }
   .random-question-button { padding: 9px 11px; font-size: 10px; }
+  .progress-widget { grid-template-columns: 1fr auto; gap: 10px; padding: 12px; }
+  .progress-track { grid-column: 1 / -1; grid-row: 2; }
+  .my-answers-button { grid-column: 2; grid-row: 1; }
+  .home-progress { width: min(100% - 24px, 720px); }
+  .timeline-topline { align-items: flex-start; flex-direction: column; gap: 5px; }
+  .timeline-axis { margin-right: 8px; margin-left: 8px; font-size: 8px; }
+  .results-actions { gap: 8px; }
   .home-guide { padding: 30px 4px 28px; font-size: 14px; }
-  .guide-intro { margin-bottom: 27px; }
+  .guide-intro { margin-bottom: 27px; padding-right: 0; }
+  .clock-doodle { top: -4px; right: 0; width: 39px; }
   .guide-details { grid-template-columns: 1fr; gap: 24px; }
   .home-guide h3 { font-size: 22px; }
   .guide-note { margin-top: 24px !important; }

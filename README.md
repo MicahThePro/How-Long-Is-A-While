@@ -10,9 +10,10 @@ Browse more than 100 questions, share your own estimate, and compare it with eve
 - **Find a question quickly** by searching its wording or browsing by topic.
 - **Choose what to answer next** by sorting for the most answered questions, unanswered questions, or alphabetically.
 - **Answer in the unit that makes sense to you**, from seconds through years.
-- **See the crowd’s estimates** grouped by equivalent duration, with response counts and percentages.
+- **See the crowd’s estimates** on a duration timeline, with the most common estimate highlighted.
 - **See how many people are online** while you take the quiz.
-- **Come back to your answers** on the same device; the site remembers which questions you have answered locally.
+- **Track your progress** and revisit your answered questions on this device.
+- **Share a question** with a direct link that opens that question.
 
 ## How it works
 
@@ -23,7 +24,7 @@ The site has two independently deployed parts:
 
 The frontend sends API requests to the Worker URL configured in [`public/config.js`](./public/config.js). The Worker allows cross-origin requests so the GitHub Pages site can reach it. It does not host the frontend.
 
-Answers are anonymous aggregates: the backend groups equivalent durations and stores their displayed labels and counts, not a connection between an answer and a person. The browser’s “already answered” reminder is separate and stored in that browser’s local storage; it is not an account or a server-side identity.
+Answers are anonymous aggregates: the backend groups equivalent durations and stores their displayed labels and counts, not a connection between an answer and a person. Progress and the “My answers” list are saved only in the browser’s local storage on this device. The quiz has no accounts and does not store a person’s answer history on the server.
 
 For comparison, durations are normalized to seconds. The quiz treats one month as 30 days and one year as 365 days. Equivalent durations entered in different units are grouped together.
 

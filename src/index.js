@@ -161,7 +161,7 @@ export class QuizRoom {
   getQuestions() {
     const questions = new Map();
     const rows = this.sql.exec(
-      `SELECT q.id, q.text, a.display_answer, a.count
+      `SELECT q.id, q.text, a.normalized_answer, a.display_answer, a.count
        FROM questions q
        LEFT JOIN answers a ON a.question_id = q.id
        ORDER BY q.id, a.normalized_answer`,
@@ -183,6 +183,7 @@ export class QuizRoom {
         question.total += row.count;
         question.options.push({
           answer: row.display_answer,
+          durationSeconds: Number(row.normalized_answer),
           count: row.count,
         });
       }
